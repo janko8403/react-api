@@ -1,0 +1,34 @@
+version: '3.8'
+services:
+  sap:
+    build:
+      context: .
+      dockerfile: Dockerfile.sap
+    image: test/sap
+    ports:
+      - 8080:80
+    volumes:
+      - ./sap:/srv/test
+#      - /srv/vendor
+  front:
+    build:
+      context: .
+      dockerfile: Dockerfile.front
+    image: test/front
+    ports:
+      - 3000:3000
+    volumes:
+      - ./front:/home/node/app
+      - /home/node/app/node_modules
+    command: npm start
+  mysql:
+    image: mysql:8.0
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: 123
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./custom.cnf:/etc/mysql/conf.d/custom.cnf
+volumes:
+  mysql-data:
